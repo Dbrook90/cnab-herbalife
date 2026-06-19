@@ -1,9 +1,0 @@
-services:
-  - type: web
-    name: cnab-herbalife
-    runtime: python
-    buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn cnab_herbalife:app
-    envVars:
-      - key: PYTHON_VERSION
-        value: 3.11.0
