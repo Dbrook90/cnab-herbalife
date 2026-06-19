@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CNAB - Herbalife International do Brasil</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --green-dark:   #1a5c2a;
+    --green-mid:    #2e7d42;
+    --green-light:  #4caf65;
+    --green-pale:   #eaf4ec;
+    --green-border: #b8dfc3;
+    --text-dark:    #1a2e1e;
+    --text-mid:     #3a5040;
+    --text-light:   #6b8a72;
+    --white:        #ffffff;
+    --gray-bg:      #f3f3f1;
+    --gray-border:  #dce8de;
+    --red:          #c0392b;
+    --red-pale:     #fdf0ef;
+    --font:         'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+  }
+
+  body {
+    font-family: var(--font);
+    background: var(--gray-bg);
+    color: var(--text-dark);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    font-size: 14px;
+  }
+
+  /* ── TOP BAR (estilo SharePoint Herbalife) ── */
+  .topbar {
+    background: var(--green-dark);
+    height: 6px;
+    width: 100%;
+  }
+
+  /* ── HEADER ── */
+  header {
+    background: var(--white);
+    border-bottom: 1px solid var(--gray-border);
+    padding: 0 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+  }
+  .header-left { display: flex; align-items: center; gap: 20px; }
+  header img {
+    height: 38px;
+    width: auto;
+    object-fit: contain;
+  }
+  .header-divider {
+    width: 1px; height: 28px;
+    background: var(--gray-border);
+  }
+  header h1 {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-dark);
+    letter-spacing: 0.01em;
+  }
+  .header-badge {
+    font-size: 11px;
+    background: var(--green-pale);
+    color: var(--green-mid);
+    padding: 3px 10px;
+    border-radius: 20px;
+    border: 1px solid var(--green-border);
+    font-weight: 600;
+  }
+
+  /* ── NAV BAR (estilo site Herbalife) ── */
+  .navbar {
+    background: var(--green-dark);
+    padding: 0 40px;
+    display: flex;
+    align-items: center;
+    height: 44px;
+    gap: 4px;
+  }
+  .navbar-item {
+    color: rgba(255,255,255,0.85);
+    font-size: 13px;
+    font-weight: 500;
+    padding: 0 14px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    cursor: default;
+    border-bottom: 3px solid transparent;
+    transition: color 0.15s, border-color 0.15s;
+  }
+  .navbar-item.active {
+    color: var(--white);
+    border-bottom-color: #7ed89a;
+    font-weight: 600;
+  }
+
+  /* ── MAIN ── */
+  main {
+    flex: 1;
+    max-width: 980px;
+    width: 100%;
+    margin: 28px auto;
+    padding: 0 24px;
+  }
+
+  /* ── PAGE TITLE ── */
+  .page-title {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--green-dark);
+    margin-bottom: 4px;
+  }
+  .page-subtitle {
+    font-size: 13px;
+    color: var(--text-light);
+    margin-bottom: 24px;
+  }
+
+  /* ── SECTION LABEL ── */
+  .section-label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--green-mid);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--green-border);
+  }
+
+  /* ── UPLOAD ZONE ── */
+  .upload-zone {
+    border: 2px dashed var(--green-border);
+    border-radius: 10px;
+    background: var(--white);
+    padding: 44px 24px;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+    position: relative;
+    margin-bottom: 10px;
+  }
+  .upload-zone:hover, .upload-zone.drag-over {
+    border-color: var(--green-mid);
+    background: var(--green-pale);
+  }
+  .upload-zone input[type=file] {
+    position: absolute; inset: 0;
+    opacity: 0; cursor: pointer; width: 100%; height: 100%;
+  }
+  .upload-icon { font-size: 38px; margin-bottom: 10px; display: block; }
+  .upload-zone p { color: var(--text-mid); font-size: 14px; font-weight: 500; }
+  .upload-zone span {
+    font-size: 12px; color: var(--text-light);
+    margin-top: 4px; display: block;
+  }
+
+  /* ── BOTÕES ── */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 9px 22px;
+    border-radius: 4px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: background 0.18s, box-shadow 0.18s;
+    font-family: var(--font);
+  }
+  .btn-primary {
+    background: var(--green-dark);
+    color: var(--white);
+  }
+  .btn-primary:hover { background: var(--green-mid); }
+  .btn-primary:disabled { background: var(--gray-border); cursor: not-allowed; }
+
+  .btn-secondary {
+    background: var(--white);
+    color: var(--text-mid);
+    border: 1px solid var(--gray-border);
+  }
+  .btn-secondary:hover { border-color: var(--green-mid); color: var(--green-dark); }
+
+  .btn-sm {
+    padding: 6px 16px;
+    font-size: 12px;
+  }
+
+  /* ── LOADING ── */
+  .loading {
+    display: none;
+    text-align: center;
+    padding: 24px;
+    color: var(--text-mid);
+    font-size: 13px;
+  }
+  .spinner {
+    width: 24px; height: 24px;
+    border: 3px solid var(--green-border);
+    border-top-color: var(--green-dark);
+    border-radius: 50%;
+    animation: spin 0.75s linear infinite;
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 8px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ── BARRA GLOBAL VENCIMENTO ── */
+  .global-dates-bar {
+    display: none;
+    background: var(--white);
+    border: 1px solid var(--green-border);
+    border-left: 4px solid var(--green-dark);
+    border-radius: 6px;
+    padding: 14px 18px;
+    margin-bottom: 20px;
+    gap: 16px;
+    align-items: flex-end;
+    flex-wrap: wrap;
+  }
+  .global-dates-bar.visible { display: flex; }
+  .global-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--green-dark);
+    white-space: nowrap;
+    align-self: center;
+  }
+
+  /* ── CARDS BOLETO ── */
+  .boleto-card {
+    background: var(--white);
+    border: 1px solid var(--gray-border);
+    border-radius: 8px;
+    margin-bottom: 14px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  }
+  .boleto-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 18px;
+    background: var(--green-pale);
+    border-bottom: 1px solid var(--green-border);
+  }
+  .boleto-header-left { display: flex; align-items: center; gap: 10px; }
+  .boleto-banco-tag {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 9px;
+    border-radius: 20px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  .tag-itau   { background: #fff3cd; color: #7d5a00; border: 1px solid #f0d080; }
+  .tag-outros { background: #d4edff; color: #005a9e; border: 1px solid #90c4f0; }
+  .boleto-filename { font-size: 13px; font-weight: 600; color: var(--text-dark); }
+
+  .btn-remove {
+    background: none; border: none; cursor: pointer;
+    color: var(--text-light); font-size: 16px;
+    padding: 4px 8px; border-radius: 4px;
+    transition: color 0.15s, background 0.15s;
+    line-height: 1;
+  }
+  .btn-remove:hover { color: var(--red); background: var(--red-pale); }
+
+  .boleto-body { padding: 18px 20px; }
+  .fields-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px 24px;
+  }
+  .field { display: flex; flex-direction: column; gap: 4px; }
+  .field label {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--text-light);
+  }
+  .field-value {
+    font-size: 13px;
+    color: var(--text-dark);
+    background: var(--gray-bg);
+    border: 1px solid var(--gray-border);
+    border-radius: 4px;
+    padding: 7px 11px;
+    font-weight: 500;
+  }
+  .field input[type=text] {
+    font-size: 13px;
+    color: var(--text-dark);
+    background: var(--white);
+    border: 1px solid var(--green-border);
+    border-radius: 4px;
+    padding: 7px 11px;
+    font-weight: 500;
+    font-family: var(--font);
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .field input[type=text]:focus {
+    border-color: var(--green-mid);
+    box-shadow: 0 0 0 3px rgba(46,125,66,0.12);
+  }
+  .field-value.mono {
+    font-family: 'Courier New', monospace;
+    font-size: 11px;
+    word-break: break-all;
+  }
+
+  /* Sacado fixo */
+  .sacado-block {
+    margin-top: 12px;
+    padding: 11px 14px;
+    background: var(--green-pale);
+    border: 1px solid var(--green-border);
+    border-radius: 6px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px 24px;
+  }
+  .sacado-label {
+    grid-column: 1 / -1;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--green-mid);
+    margin-bottom: 2px;
+  }
+
+  /* Data vencimento editável (sem "aplicar a todos" — fica só na barra global) */
+  .datas-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px 24px;
+    margin-top: 12px;
+  }
+
+  .boleto-erro {
+    padding: 14px 20px;
+    color: var(--red);
+    font-size: 13px;
+  }
+
+  /* ── AÇÕES ── */
+  .acoes {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 8px;
+    padding-top: 18px;
+    border-top: 1px solid var(--gray-border);
+  }
+
+  /* ── TOAST ── */
+  #toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--green-dark);
+    color: var(--white);
+    padding: 11px 20px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 0.25s, transform 0.25s;
+    pointer-events: none;
+    z-index: 999;
+  }
+  #toast.show { opacity: 1; transform: translateY(0); }
+  #toast.erro { background: var(--red); }
+
+  /* ── FOOTER ── */
+  footer {
+    text-align: center;
+    padding: 16px;
+    font-size: 11px;
+    color: var(--text-light);
+    border-top: 1px solid var(--gray-border);
+    background: var(--white);
+  }
+
+  /* input data global */
+  .input-global {
+    font-size: 13px;
+    color: var(--text-dark);
+    background: var(--white);
+    border: 1px solid var(--green-border);
+    border-radius: 4px;
+    padding: 7px 11px;
+    font-family: var(--font);
+    outline: none;
+    transition: border-color 0.2s;
+    width: 150px;
+  }
+  .input-global:focus { border-color: var(--green-mid); }
+  .input-label-sm {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--text-light);
+    display: block;
+    margin-bottom: 4px;
+  }
+</style>
+</head>
+<body>
+
+<!-- Barra verde topo -->
+<div class="topbar"></div>
+
+<!-- Header branco com logo -->
+<header>
+  <div class="header-left">
+    <img src="/static/logo.png" alt="Herbalife">
+    <div class="header-divider"></div>
+    <h1>CNAB — Herbalife International do Brasil</h1>
+  </div>
+  <span class="header-badge">SISPAG · Itaú 341</span>
+</header>
+
+<!-- Navbar verde -->
+<div class="navbar">
+  <div class="navbar-item active">Gerador de Remessa</div>
+</div>
+
+<main>
+
+  <div class="page-title">Gerador de Remessa CNAB 240</div>
+  <div class="page-subtitle">Upload de boletos em PDF para geração do arquivo de pagamento SISPAG</div>
+
+  <!-- Upload -->
+  <div class="section-label">Upload de Boletos</div>
+  <div class="upload-zone" id="uploadZone">
+    <input type="file" id="fileInput" accept=".pdf" multiple>
+    <span class="upload-icon">📄</span>
+    <p>Arraste os PDFs dos boletos aqui ou clique para selecionar</p>
+    <span>Itaú e outros bancos no mesmo envio · múltiplos arquivos</span>
+    <br>
+    <button class="btn btn-primary" style="margin-top:12px" type="button"
+      onclick="document.getElementById('fileInput').click()">
+      Selecionar PDFs
+    </button>
+  </div>
+  <div class="loading" id="loading">
+    <span class="spinner"></span> Extraindo dados dos boletos...
+  </div>
+
+  <!-- Barra global de vencimento (só aqui, tela inicial) -->
+  <div class="global-dates-bar" id="globalDatesBar">
+    <span class="global-label">🗓 Alterar data de pagamento para todos os boletos:</span>
+    <div>
+      <span class="input-label-sm">Novo Vencimento</span>
+      <input class="input-global" type="text" id="globalVenc"
+        placeholder="DD/MM/AAAA" maxlength="10" oninput="mascaraData(this)">
+    </div>
+    <button class="btn btn-primary btn-sm" onclick="aplicarVencimentoGlobal()">
+      Aplicar a Todos
+    </button>
+  </div>
+
+  <!-- Lista de boletos -->
+  <div id="boletos-section" style="display:none">
+    <div class="section-label">Boletos Identificados</div>
+    <div id="boletos-lista"></div>
+    <div class="acoes">
+      <button class="btn btn-secondary" onclick="limparTudo()">Limpar</button>
+      <button class="btn btn-primary" id="btnGerar" onclick="gerarCNAB()">
+        ⬇ Gerar CNAB 240
+      </button>
+    </div>
+  </div>
+
+</main>
+
+<div id="toast"></div>
+
+<footer>Created by Daniele Ribeiro</footer>
+
+<script>
+  let boletos = [];
+
+  // ── UPLOAD ───────────────────────────────────────────────────────────────
+  const fileInput = document.getElementById('fileInput');
+  const uploadZone = document.getElementById('uploadZone');
+
+  fileInput.addEventListener('change', () => processarArquivos(fileInput.files));
+
+  uploadZone.addEventListener('dragover', e => {
+    e.preventDefault(); uploadZone.classList.add('drag-over');
+  });
+  uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('drag-over'));
+  uploadZone.addEventListener('drop', e => {
+    e.preventDefault(); uploadZone.classList.remove('drag-over');
+    processarArquivos(e.dataTransfer.files);
+  });
+
+  async function processarArquivos(files) {
+    const pdfs = Array.from(files).filter(f => f.name.toLowerCase().endsWith('.pdf'));
+    if (!pdfs.length) { showToast('Selecione arquivos PDF.', true); return; }
+    mostrarLoading(true);
+    const form = new FormData();
+    pdfs.forEach(f => form.append('pdfs', f));
+    try {
+      const resp = await fetch('/extrair', { method: 'POST', body: form });
+      const dados = await resp.json();
+      boletos = [...boletos, ...dados];
+      renderizarBoletos();
+    } catch (e) {
+      showToast('Erro ao processar PDFs.', true);
+    } finally {
+      mostrarLoading(false);
+      fileInput.value = '';
+    }
+  }
+
+  // ── RENDER ───────────────────────────────────────────────────────────────
+  function renderizarBoletos() {
+    const lista = document.getElementById('boletos-lista');
+    lista.innerHTML = '';
+    boletos.forEach((b, idx) => {
+      const card = document.createElement('div');
+      card.className = 'boleto-card';
+      if (b.erro) {
+        card.innerHTML = `
+          <div class="boleto-header">
+            <div class="boleto-header-left">
+              <span class="boleto-filename">${b.nome_arquivo}</span>
+            </div>
+            <button class="btn-remove" onclick="removerBoleto(${idx})">✕</button>
+          </div>
+          <div class="boleto-erro">⚠ Erro ao extrair: ${b.erro}</div>`;
+      } else {
+        const banco = b.banco || (b.cod_barras ? b.cod_barras.substring(0,3) : '---');
+        const tagClass = banco === '341' ? 'tag-itau' : 'tag-outros';
+        const tagLabel = banco === '341' ? 'Itaú (341)' : `Banco ${banco}`;
+        const vencDisplay = b.vencimento_display || formatarDataDisplay(b.vencimento || '');
+        card.innerHTML = `
+          <div class="boleto-header">
+            <div class="boleto-header-left">
+              <span class="boleto-banco-tag ${tagClass}">${tagLabel}</span>
+              <span class="boleto-filename">${b.nome_arquivo}</span>
+            </div>
+            <button class="btn-remove" onclick="removerBoleto(${idx})">✕</button>
+          </div>
+          <div class="boleto-body">
+            <div class="fields-grid">
+              <div class="field">
+                <label>Cedente (Fornecedor)</label>
+                <div class="field-value">${b.cedente_nome || '—'}</div>
+              </div>
+              <div class="field">
+                <label>CNPJ Cedente</label>
+                <div class="field-value">${formatarCNPJ(b.cedente_cnpj14 || '')}</div>
+              </div>
+              <div class="field">
+                <label>Valor</label>
+                <div class="field-value">R$ ${b.valor_display || '0,00'}</div>
+              </div>
+              <div class="field">
+                <label>Código de Barras</label>
+                <div class="field-value mono">${b.cod_barras || '—'}</div>
+              </div>
+            </div>
+            <div class="sacado-block">
+              <div class="sacado-label">Pagador (Sacado) — Fixo</div>
+              <div class="field">
+                <label>Nome</label>
+                <div class="field-value">HERBALIFE INTERNATIONAL DO BRA</div>
+              </div>
+              <div class="field">
+                <label>CNPJ</label>
+                <div class="field-value">00.292.858/0001-77</div>
+              </div>
+            </div>
+            <div class="datas-row">
+              <div class="field">
+                <label>Vencimento</label>
+                <input type="text" id="venc-${idx}" value="${vencDisplay}"
+                  placeholder="DD/MM/AAAA" maxlength="10" oninput="mascaraData(this)">
+              </div>
+              <div class="field">
+                <label>Data de Pagamento</label>
+                <input type="text" id="pgto-${idx}" value=""
+                  placeholder="DD/MM/AAAA (opcional)" maxlength="10" oninput="mascaraData(this)">
+              </div>
+            </div>
+          </div>`;
+      }
+      lista.appendChild(card);
+    });
+
+    const temBoletos = boletos.length > 0;
+    document.getElementById('boletos-section').style.display = temBoletos ? 'block' : 'none';
+    document.getElementById('globalDatesBar').classList.toggle('visible', boletos.length > 1);
+  }
+
+  // ── VENCIMENTO GLOBAL ────────────────────────────────────────────────────
+  function aplicarVencimentoGlobal() {
+    const venc = document.getElementById('globalVenc').value;
+    if (!venc) { showToast('Informe a data de vencimento.', true); return; }
+    boletos.forEach((b, idx) => {
+      if (b.erro) return;
+      const el = document.getElementById(`venc-${idx}`);
+      if (el) el.value = venc;
+    });
+    showToast('Vencimento aplicado a todos os boletos.');
+  }
+
+  // ── GERAR CNAB ───────────────────────────────────────────────────────────
+  async function gerarCNAB() {
+    const btn = document.getElementById('btnGerar');
+    btn.disabled = true;
+    btn.textContent = 'Gerando...';
+
+    const agora = new Date();
+    const data_arq = [
+      String(agora.getDate()).padStart(2,'0'),
+      String(agora.getMonth()+1).padStart(2,'0'),
+      agora.getFullYear()
+    ].join('');
+    const hora_arq = [
+      String(agora.getHours()).padStart(2,'0'),
+      String(agora.getMinutes()).padStart(2,'0'),
+      String(agora.getSeconds()).padStart(2,'0')
+    ].join('');
+
+    // Pegar vencimento do primeiro boleto válido para o nome do arquivo
+    let venc_nome = data_arq;
+    for (let idx = 0; idx < boletos.length; idx++) {
+      if (!boletos[idx].erro) {
+        const v = limpaData(document.getElementById(`venc-${idx}`)?.value || '');
+        if (v) { venc_nome = v; break; }
+      }
+    }
+
+    const boletosPayload = boletos
+      .filter(b => !b.erro)
+      .map((b, idx) => ({
+        cod_barras:     b.cod_barras || '',
+        cedente_nome:   b.cedente_nome || '',
+        cedente_cnpj15: b.cedente_cnpj15 || '0'.repeat(15),
+        vencimento:     limpaData(document.getElementById(`venc-${idx}`)?.value || '') || b.vencimento || '00000000',
+        valor_centavos: b.valor_centavos || 0,
+        doc:            'CNAB'
+      }));
+
+    if (!boletosPayload.length) {
+      showToast('Nenhum boleto válido.', true);
+      btn.disabled = false;
+      btn.innerHTML = '⬇ Gerar CNAB 240';
+      return;
+    }
+
+    try {
+      const resp = await fetch('/gerar', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ boletos: boletosPayload, data_arq, hora_arq, venc_nome })
+      });
+      if (!resp.ok) {
+        const err = await resp.json();
+        showToast('Erro: ' + (err.erro || 'desconhecido'), true);
+        return;
+      }
+      const blob = await resp.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      // Nome do arquivo = apenas a data de vencimento (8 chars)
+      a.download = `${venc_nome}.txt`;
+      a.click();
+      URL.revokeObjectURL(url);
+      showToast('Arquivo CNAB gerado com sucesso!');
+    } catch (e) {
+      showToast('Erro ao gerar CNAB.', true);
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = '⬇ Gerar CNAB 240';
+    }
+  }
+
+  // ── UTILITÁRIOS ──────────────────────────────────────────────────────────
+  function removerBoleto(idx) { boletos.splice(idx, 1); renderizarBoletos(); }
+  function limparTudo() {
+    boletos = [];
+    renderizarBoletos();
+    document.getElementById('globalVenc').value = '';
+  }
+  function mascaraData(el) {
+    let v = el.value.replace(/\D/g,'');
+    if (v.length > 2) v = v.slice(0,2)+'/'+v.slice(2);
+    if (v.length > 5) v = v.slice(0,5)+'/'+v.slice(5,9);
+    el.value = v;
+  }
+  function limpaData(str) {
+    const d = str.replace(/\D/g,'');
+    return d.length === 8 ? d : '';
+  }
+  function formatarDataDisplay(str8) {
+    if (!str8 || str8.length !== 8) return '';
+    return str8.slice(0,2)+'/'+str8.slice(2,4)+'/'+str8.slice(4);
+  }
+  function formatarCNPJ(c) {
+    if (!c || c.length < 14) return c || '—';
+    return c.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/,'$1.$2.$3/$4-$5');
+  }
+  function mostrarLoading(show) {
+    document.getElementById('loading').style.display = show ? 'block' : 'none';
+    document.getElementById('uploadZone').style.display = show ? 'none' : 'block';
+  }
+  function showToast(msg, erro=false) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = 'show'+(erro?' erro':'');
+    setTimeout(()=>{ t.className=''; }, 3000);
+  }
+</script>
+</body>
+</html>
